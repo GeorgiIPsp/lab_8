@@ -20,10 +20,10 @@ jobs:
       - name: Build project
         run: dotnet build Проба_Фрингерпринтер/Проба_Фрингерпринтер.csproj --configuration ${{ matrix.configuration }}
         
-      - name: Upload build artifacts
+      - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: build-files
+          name: build-files-${{ matrix.configuration }}
           path: /dist
           retention-days: 1
 
