@@ -1,5 +1,6 @@
 name: Individ_1
 
+
 on: [pull_request]
 
 jobs:
@@ -20,12 +21,14 @@ jobs:
       - name: Build project
         run: dotnet build Проба_Фрингерпринтер/Проба_Фрингерпринтер.csproj --configuration ${{ matrix.configuration }}
         
-      - name: Upload build artifact
+      - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: build-files-${{ matrix.configuration }}
-          path: /dist
-          retention-days: 1
+          path: |
+            Проба_Фрингерпринтер/bin/${{ matrix.configuration }}//*
+            Проба_Фрингерпринтер/obj/${{ matrix.configuration }}//*
+          retention-days: 7
 
   test:
     needs: build
@@ -49,15 +52,17 @@ jobs:
     needs: [build, test]
     runs-on: ubuntu-latest
     steps:
-      - name: Download build artifacts
+      - name: Download Debug build artifacts
         uses: actions/download-artifact@v4
         with:
-          name: build-files
-          path: dist/
+          name: build-files-Debug
+          path: dist/debug/
+          
+      - name: Download Release build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-files-Release
+          path: dist/release/
           
       - name: List downloaded files
         run: ls -la dist/
-        
-      - name: Deploy
-        run: ./deploy.sh
-
