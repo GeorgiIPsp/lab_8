@@ -23,9 +23,9 @@ jobs:
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: build-files-${{ matrix.configuration }}
+          name: build-files
           path: /dist
-          retention-days: 7
+          retention-days: 1
 
   test:
     needs: build
