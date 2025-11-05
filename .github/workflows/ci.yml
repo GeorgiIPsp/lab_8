@@ -43,7 +43,7 @@ jobs:
           dotnet-version: '8.0.x'
           
       - name: Run tests
-        run: dotnet test Test/Tests.csproj ${{ matrix.configuration }}
+        run: dotnet test Test/Tests.csproj --configuration ${{ matrix.configuration }}
 
   deploy:
     needs: [build, test]
