@@ -1,0 +1,62 @@
+name: Individ_1
+
+on: [pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        configuration: [Debug, Release]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+          
+      - name: Build project
+        run: dotnet build Проба_Фрингерпринтер/Проба_Фрингерпринтер.csproj --configuration ${{ matrix.configuration }}
+        
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-files-${{ matrix.configuration }}
+          path: /dist
+          retention-days: 1
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        configuration: [Debug, Release]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+          
+      - name: Run tests
+        run: dotnet test Test/Tests.csproj ${{ matrix.configuration }}
+
+  deploy:
+    needs: [build, test]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build-files
+          path: dist/
+          
+      - name: List downloaded files
+        run: ls -la dist/
+        
+      - name: Deploy
+        run: ./deploy.sh
