@@ -20,13 +20,13 @@ jobs:
       - name: Build project in Release
         run: dotnet build Проба_Фрингерпринтер/Проба_Фрингерпринтер.csproj --configuration Release
         
-      - name: Upload build artifacts
+      - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: build-files
           path: |
             Проба_Фрингерпринтер/bin/Release//*
-          retention-days: 7
+          retention-days: 1
 
   test:
     needs: build
@@ -59,13 +59,13 @@ jobs:
           path: |
             coverage-results//coverage.cobertura.xml
             coverage-results/**/*.trx
-          retention-days: 7
+          retention-days: 1
 
   deploy:
     needs: [build, test]
     runs-on: ubuntu-latest
     steps:
-      - name: Download build artifacts
+      - name: Download build artifact
         uses: actions/download-artifact@v4
         with:
           name: build-files
@@ -79,7 +79,5 @@ jobs:
           
       - name: List downloaded files
         run: |
-          echo "=== Build artifacts ==="
           find dist/ -type f | head -10
-          echo "=== Coverage reports ==="
           find coverage/ -type f
