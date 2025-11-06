@@ -21,14 +21,14 @@ jobs:
       - name: Build project
         run: dotnet build Проба_Фрингерпринтер/Проба_Фрингерпринтер.csproj --configuration ${{ matrix.configuration }}
         
-      - name: Upload build artifacts
+      - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: build-files-${{ matrix.configuration }}
           path: |
             Проба_Фрингерпринтер/bin/${{ matrix.configuration }}//*
             Проба_Фрингерпринтер/obj/${{ matrix.configuration }}//*
-          retention-days: 7
+          retention-days: 1
 
   test:
     needs: build
@@ -52,13 +52,13 @@ jobs:
     needs: [build, test]
     runs-on: ubuntu-latest
     steps:
-      - name: Download Debug build artifacts
+      - name: Download Debug build artifact
         uses: actions/download-artifact@v4
         with:
           name: build-files-Debug
           path: dist/debug/
           
-      - name: Download Release build artifacts
+      - name: Download Release build artifact
         uses: actions/download-artifact@v4
         with:
           name: build-files-Release
